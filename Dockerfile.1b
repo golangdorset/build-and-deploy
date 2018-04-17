@@ -1,0 +1,6 @@
+FROM golang:alpine // HL
+
+ADD helloworld.go /go/src/github.com/golangdorset/build-and-deploy/
+
+CMD ["go", "run", "/go/src/github.com/golangdorset/build-and-deploy/helloworld.go"]
+

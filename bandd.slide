@@ -1,0 +1,129 @@
+Building and Deploying Go Apps
+Golang Dorset
+
+Dan Potepa
+
+DevOps Engineer, Lush Digital
+dan.potepa@lush.co.uk
+@cuotos
+
+* Who's used what??
+
+- Golang
+- Docker
+- CI/CD tools (Jenkins, Bamboo, Gitlab Pipelines...)
+- Orchestration tools
+
+* Our super simple sample app
+*helloworld.go*
+.code helloworld.go
+
+: how do we deploy it?
+
+* Deploy go source directly to server
+
+  scp helloworld.go admin@prodserver1:/home/admin/
+  ssh admin@prodserver1
+  go run helloworld.go
+  repeat... prodserver2
+
+- server needs the go runtime environment configured
+- server needs user accounts, IP Tables etc
+- dependencies need to be pre-satisfied
+- multiple source files to copy
+- want to change version of go?
+- ....python?
+- "please can you just hotfix this one file in live.... just once"
+
+
+* Docker.1
+: path of the code has to be specific if using dependencies etc
+: this example has no external dependencies
+: how big is the image?
+: What can we do to make it smaller?
+: precompile the code to a binary
+
+** Golang official docker base image
+
+.code Dockerfile.1
+
+build and run the docker image
+
+	docker build -t gd1 .
+	docker run --rm -ti -p 8080:8080 gd1
+
+* Docker.1b
+
+.code Dockerfile.1b
+
+* go build
+
+* Docker.2
+** alpine base image
+
+.code Dockerfile.2
+
+build the docker image
+
+	docker build -t gd2 .
+
+
+* Docker.3
+** SCRATCH base image
+
+.code Dockerfile.3
+
+build the docker image
+
+	docker build -t gd3 .
+
+
+* Scratch gotchas
+
+	$ docker run godocker1
+	no such file or directory
+
+	CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo helloworld.go
+
+	$ docker run godocker2
+	Get https://google.com: x509: failed to load system roots and no roots provided
+
+	ADD ca-certificates.crt /etc/ssl/certs/
+
+* Considerations...
+- use docker tags to version
+- listen on a standard port (80) and redirect later
+- configuration (Env vars / mounted config files)
+- don't write to log files in the container
+- the binary was built before the Docker image
+- repeatable build process (consider mulitstage docker build)
+
+* Multistage Docker build (Docker.4)
+
+.code Dockerfile.4
+
+* Docker image sizes
+
+(just a guide)
+
+- golang 		= 770MB
+- golang:alpine = 376MB
+- alpine		= 10MB
+- scratch 		= 6.58MB
+
+- binary 		= 6.30MB
+
+* Deploying a docker image
+
+* Orchestration Tools
+- Google container engine
+- Amazon ECS
+- Azure Container Server
+- Docker Swarm
+- Rancher
+
+* Kubernetes
+
+* Pod
+
+.code k8s/pod-1.yaml

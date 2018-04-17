@@ -1,0 +1,21 @@
+FROM golang:alpine as builder
+
+# Put our source into the container
+ADD helloworld.go /go/src/github.com/golangdorset/
+
+WORKDIR /go/src/github.com/golangdorset/
+
+# Get dependencies (use dep for vendoring)
+RUN go get -v
+
+# Compile the binary, without relying on sys libraries
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o /tmp/helloworld helloworld.go 
+
+# Start with a completely EMPTY docker image
+FROM scratch
+
+# Copy only our compiled binary from the previous image
+COPY --from=builder /tmp/helloworld /
+
+# happy days
+CMD ["/helloworld"]
