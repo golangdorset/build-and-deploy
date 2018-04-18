@@ -6,15 +6,14 @@ import (
 )
 
 func main(){
-	log.Println("start listening...")
+	log.Println("start listening on port 8080...")
 
 	http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request){
 		log.Println("hello there")
 		w.Write([]byte("Hello there"))
 	})
 
-	err := http.ListenAndServe(":80", nil)
-	if err != nil {
-		log.Fatal(err)
-	}
+	http.Handle("/files", http.StripPrefix("/files", http.FileServer(http.Dir("."))))
+
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }

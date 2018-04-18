@@ -17,3 +17,5 @@ spec:
         image: cuotos/helloworld
         ports:
         - containerPort: 8080
+      - name: sql-proxy
+        image: nginx

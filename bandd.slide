@@ -59,7 +59,7 @@ build and run the docker image
 * go build
 
 * Docker.2
-** alpine base image
+** linux base image
 
 .code Dockerfile.2
 
@@ -68,8 +68,16 @@ build the docker image
 	docker build -t gd2 .
 
 
+* Docker.2b
+
+.code Dockerfile.2b
+
+ubuntu = 112MB
+alpine = 4MB 
+
 * Docker.3
 ** SCRATCH base image
+: code will use glibc which wont be present and should fail.
 
 .code Dockerfile.3
 
@@ -111,9 +119,11 @@ build the docker image
 - alpine		= 10MB
 - scratch 		= 6.58MB
 
-- binary 		= 6.30MB
+- original binary 		= 6.30MB
 
 * Deploying a docker image
+
+: "manually" ssh to machine and run the docker image
 
 * Orchestration Tools
 - Google container engine
@@ -124,6 +134,3 @@ build the docker image
 
 * Kubernetes
 
-* Pod
-
-.code k8s/pod-1.yaml
